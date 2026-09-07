@@ -82,4 +82,4 @@ const Chatcontaner = ({selecteduser,setSelecteduser}) => {
   )
 }
 
-export default Chatcontaner
+export default Chatcontaner;
