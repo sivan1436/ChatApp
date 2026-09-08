@@ -3,10 +3,11 @@
 import Message from "../models/message.js";
 import user from "../models/user.js";
 import cloudinary from "../lib/cloudinary.js";
+import {io,userSocketMap} from "../server.js";
 
 
 
-export async function GetAllUsers(req,res){
+export async function GetUsers(req,res){
     try{
         const userId = req.user._id;
         const filteredUsers = await user.find({_id :{ $ne : userId}}).select("-passwords");
@@ -113,6 +114,11 @@ export async function SendMessage(req,res){
                            video : videoUrl
                         }
                      )
+                     // emit the new message to the receiver
+                     const receiverSocket = userSocketMap[receiverId];
+                     if(receiverSocket){
+                        io.to(receiverSocketId).emit("newMessage",newMessage);
+                     }
                  res.status(200).json({success : true,message : newMessage});    
     
 }   
