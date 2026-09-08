@@ -5,6 +5,7 @@ import http from "http";
 import connectDB from "./Config/DBconfig.js";
 import dns from "dns";
 import UserRouter from "./Routes/userRoutes.js";
+import MessageRouter from "./Routes/messageRoutes.js";
 
 
 dns.setServers(["8.8.8.8","8.8.4.4"]);
@@ -20,4 +21,5 @@ app.use("/api/status", (req, res) => {
     res.status(200).json({message: "Server is running"});
 });
 app.use("/api/auth",UserRouter);
+app.use("/api/messages",MessageRouter);
 server.listen(process.env.PORT,()=>console.log("server is running on port:",process.env.PORT));
