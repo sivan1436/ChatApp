@@ -49,4 +49,4 @@ const Profilepage = () => {
   )
 }
 
-export default Profilepage
+export default Profilepage;
