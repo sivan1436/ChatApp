@@ -1,18 +1,23 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import assets from '../assets/assets'
+import { AuthContext } from '../../context/Authcontext'
 
-const Lofinpage = () => {
+const LoginPage = () => {
   const [currentstate,setCurrentstate] = useState("Sign up")
   const [fullname,setFullname] = useState("")
   const [email,setEmail] = useState("")
   const [password,setPassword] = useState("")
   const [Bio,setBio] = useState("")
   const [isDataSubmited,setIsDataSubmited] = useState(false)
+  
+  const { Login } = useContext(AuthContext)
   async function onSubmitHandler(e) {
     e.preventDefault();
     if(currentstate ==="Sign up" && !isDataSubmited){
       setIsDataSubmited(true)
+      return;
     }
+    Login(currentstate === "Sign up" ? "/signup" : "/login",{fullname,email,password,Bio})
     
   }
   return (
@@ -70,7 +75,7 @@ const Lofinpage = () => {
           <p className='text-sm text-gray-600'>
             Already have an Account ? 
             <span onClick={()=>{setCurrentstate("Sign In");setIsDataSubmited(false)}}
-              className='font-medium text-violet-500 cursor-pointer'>Login her</span></p>
+              className='font-medium text-violet-500 cursor-pointer'>Login here</span></p>
          ):(
           <p
           className='text-sm text-gray-600'>
@@ -83,4 +88,4 @@ const Lofinpage = () => {
   )
 }
 
-export default Lofinpage
+export default LoginPage;

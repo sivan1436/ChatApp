@@ -15,30 +15,30 @@ export async function Signup(req,res) {
             Bio,
         }=req.body;
         if (!fullname || !email || !password) {
-            return res.status(400).json({sucess : false,message : "Please fill all the fields"});
+            return res.status(400).json({success : false,message : "Please fill all the fields"});
         }
         const existingUser = await user.findOne({email});
         if (existingUser) {
-            return res.status(400).json({sucess : false,message : "User already exists"});
+            return res.status(400).json({success : false,message : "User already exists"});
         }
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         const newUser = await user.create({
             email,
             fullname,
-            password : hasedPassword,
+            password : hashedPassword,
             Bio,
         }) 
         const  token = GenerateToken(newUser._id);
         return res.status(202).json({
             success :true,
             message : "User created successfully",
-            newUser,
+            user : newUser,
             token
         })
      } catch (error) {
         console.log(error);
-        return res.status(500).json({sucess : false,message : "Internal Server Error"});
+        return res.status(500).json({success : false,message : "Internal Server Error"});
 
     }
 };
@@ -98,13 +98,13 @@ export async function UpdateUserProfile(req,res){
             await user.findByIdAndUpdate(userId,{
                 fullname,
                 Bio,
-            },{new : true});
+            },{returnDocument : "after"});
             updatedUser = await user.findById(userId);
         }
         else{
             const upload = await cloudinary.uploader.upload(profilePicture)
             updatedUser = await user.findByIdAndUpdate(userId,{
-                profilePicture : upload.secure_url,
+                profilePic : upload.secure_url,
                 fullname,
                 Bio,},{new : true});
             }

@@ -1,15 +1,16 @@
 import jwt from "jsonwebtoken";
+import user from "../models/user.js";
 
 // middleware to verify the token
 export async function ProtectRoutes(req,res,next){
     try{
         const token = req.headers.token;
         const decoded = jwt.verify(token,process.env.JWT_SECRET);
-        const user = await user.findbyId(decoded.UserId).select("-password")
-        if(!user){
+        const authenticatedUser = await user.findById(decoded.id).select("-password")
+        if(!authenticatedUser){
             return res.status(401).json({success : false,message : "User not found"});
         }
-        req.user = user;
+        req.user = authenticatedUser;
         next();
 
     }
