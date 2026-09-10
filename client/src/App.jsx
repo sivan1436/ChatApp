@@ -1,10 +1,10 @@
-import { useContext } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
-import HomePage from './pages/HomePage.jsx'
-import LoginPage from './pages/LoginPage.jsx'
-import Profilepage from './pages/Profilepage.jsx'
-import {Toaster} from "react-hot-toast"
-import { AuthContext } from '../context/Authcontext.jsx'
+import { useContext } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import HomePage from './pages/HomePage.jsx';
+import LoginPage from "./pages/LoginPage.jsx";
+import Profilepage from './pages/Profilepage.jsx';
+import {Toaster} from "react-hot-toast";
+import { AuthContext } from '../context/Authcontext.jsx';
 
 
 const App = () => {
