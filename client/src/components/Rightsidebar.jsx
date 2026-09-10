@@ -1,43 +1,58 @@
-import React from 'react'
-import assets, { imagesDummyData } from '../assets/assets'
+import { useContext } from 'react'
+import assets from '../assets/assets'
+import { ChatContext } from '../../context/ChatContext'
+import { AuthContext } from '../../context/Authcontext'
 
-const Rightsidebar = ({selecteduser}) => {
+const Rightsidebar = ({isOpen, onClose}) => {
+  const {selecteduser,messages} = useContext(ChatContext)
+  const {onlineuser} = useContext(AuthContext)
+  const msgMedia = messages.filter((message)=>message.image || message.video || message.audio)
   return selecteduser && (
-    <div className={`bg-[#8185B2]/10 text-white w-full realative overflow-y-scroll ${selecteduser? 'max-md:hidden' : ""}`}>
+    <div className={`details-surface ${isOpen ? 'fixed inset-0 z-30 block h-[100dvh] w-full shadow-2xl' : 'hidden lg:block'} text-white min-w-0 min-h-0 relative overflow-y-auto`}>
+      <button type='button' onClick={onClose} aria-label='Close user details' className='absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-xl lg:hidden'>
+        x
+      </button>
 
-
-   <div className='pt-6 flex flex-col items-center gap-2 text-xs font-light
-  mx-auto'>
+   <div className='mx-auto flex min-h-full w-full max-w-3xl flex-col items-center gap-2 px-5 pb-10 pt-16 text-xs font-light sm:px-10'>
   <img src={selecteduser?.profilePic || assets.avatar_icon} 
   className='w-20 aspect-[1/1] rounded-full'/>
-  <h1 className='px-10 text-xl font-medium mx-auto flex items-center
+  <h1 className='px-5 text-lg sm:text-xl text-center break-words font-medium mx-auto flex items-center
   gap-2'>
-    <p className='w-2 h-2 rounded-full bg-green-500'></p>{selecteduser.fullName}
+  <p className={`w-2 h-2 rounded-full ${onlineuser.includes(selecteduser._id) ? 'bg-green-500' : 'bg-gray-500'}`}></p>{selecteduser.fullname}
   </h1>
-  <p className='px-10 mx-aut0'> {selecteduser.bio}
+  <p className='px-5 text-center break-words'> {selecteduser.Bio || 'No bio added'}
 
   </p>
-  </div>
      <hr className='border-[#ffffff50] my-5'/>
-     <div className='px-5 text-xs'>
-      <p>media</p>
-      <div className='mt-2 max-h-[200px] overflow-y-scroll grid grid-cols-2
-      gap-4 opacity-80'>
-      {imagesDummyData.map((url,index)=>(
+    <div className='w-full px-0 text-xs'>
+     <p className='text-sm'>Media shared in this chat</p>
+     <div className='mt-3 grid max-h-none grid-cols-2 gap-3 overflow-y-visible opacity-90 sm:grid-cols-3'>
+      {msgMedia.map((message,index)=>{
+        const url = message.image || message.video || message.audio
+        return (
         <div key={index}
-        onClick={()=>window.open(url)}
-        className='cursor-pointer rounded'>
-          <img src={url} alt="" className='h-full rounded-md'/>
+        onClick={()=>window.open(url, '_blank', 'noopener,noreferrer')}
+        className='cursor-pointer rounded overflow-hidden'>
+          {message.audio ? (
+            <audio src={url} controls className='w-full' />
+          ) : message.video ? (
+            <video src={url} controls className='aspect-square h-auto w-full rounded-md object-cover' />
+          ) : (
+            <img src={url} alt='Shared media' className='aspect-square h-auto w-full rounded-md object-cover'/>
+          )}
 
         </div>
-      ))}
+        )
+      })}
+      {!msgMedia.length && <p className='col-span-2 text-gray-400'>No media shared yet</p>}
       </div>
 
      </div>
+  </div>
     </div>
   ) 
     
   
 }
 
-export default Rightsidebar
+export default Rightsidebar;

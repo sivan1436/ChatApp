@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import assets from '../assets/assets'
 import { AuthContext } from '../../context/Authcontext'
 
@@ -21,13 +21,13 @@ const LoginPage = () => {
     
   }
   return (
-    <div className='min-h-screen bg-cover bg-center flex items-center
-    justify-content gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl'>
+    <div className='min-h-screen w-full overflow-x-hidden bg-cover bg-center flex items-center
+    justify-center gap-8 px-4 py-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl'>
      {/* left */}
-     <img src={assets.logo_big} alt='' className='w-[min(30vw,250px)]' />
+    <img src={assets.logo_big} alt='ChatNext' className='brand-logo w-[min(55vw,250px)] sm:w-[min(30vw,250px)]' />
         {/* Right side */}
        <form onSubmit={onSubmitHandler}
-       className='border-2 bg-white/8 text-white border-gray-500 p-6 
+      className='auth-surface w-full max-w-[420px] border-2 text-white p-5 sm:p-6 
        flex flex-col gap-6 rounded-lg shadow-lg'>
         <h2 className='font-medium text-2xl flex justify-between items-center'>
         {currentstate}
@@ -64,7 +64,7 @@ const LoginPage = () => {
        }
        <button
        type='submit'
-       className='py-3 bg-gradient-to-r from-purple-400 to-violet-600
+      className='primary-action py-3
        text-white rounded-md cursor-pointer'>{currentstate === "Sign up" ? 'Create Account' : "Login Now"}</button>
        <div className='flex items-center gap-2 text-sm text-gray-500'>
         <input type='checkbox' />
@@ -75,12 +75,12 @@ const LoginPage = () => {
           <p className='text-sm text-gray-600'>
             Already have an Account ? 
             <span onClick={()=>{setCurrentstate("Sign In");setIsDataSubmited(false)}}
-              className='font-medium text-violet-500 cursor-pointer'>Login here</span></p>
+              className='accent-copy font-medium cursor-pointer'>Login here</span></p>
          ):(
           <p
           className='text-sm text-gray-600'>
             Don't have an account ? <span onClick={()=>{setCurrentstate("Sign up");}}
-            className='font-medium text-violet-500 cursor-pointer'>Sign up</span></p>
+            className='accent-copy font-medium cursor-pointer'>Sign up</span></p>
          )}
        </div>
        </form>

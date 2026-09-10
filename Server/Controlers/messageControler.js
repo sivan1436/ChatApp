@@ -10,7 +10,7 @@ import {io,userSocketMap} from "../server.js";
 export async function GetUsers(req,res){
     try{
         const userId = req.user._id;
-        const filteredUsers = await user.find({_id :{ $ne : userId}}).select("-passwords");
+        const filteredUsers = await user.find({_id :{ $ne : userId}}).select("-password");
         const unseenMessages = {}
         const promise = filteredUsers.map(
             async(user)=>{
@@ -24,7 +24,7 @@ export async function GetUsers(req,res){
                     }
             })
             await Promise.all(promise)
-            res.status(200).json({users : filteredUsers,unseenMessages})
+            res.status(200).json({success : true, users : filteredUsers, unseenMessages})
         
     } catch (error) {
         console.log(error);
@@ -60,7 +60,7 @@ export async function GetMessages(req,res){
             },{
                 seen : true
             })
-    res.status(200).json({messages})
+    res.status(200).json({success : true, messages})
     }
     catch (error) {
         console.log(error);
@@ -87,45 +87,52 @@ export async function MarkAsSeen(req,res){
 // controler to send message
 export async function SendMessage(req,res){
     try{
-        const {text,image,video} = req.body;
+        const {text,image,video,audio} = req.body;
         const senderId = req.user._id;
         const {id :receiverId} = req.params;
-        if(!text || !image || !video){
+        if(!text && !image && !video && !audio){
             return res.status(400).json({
-                status : false,
+                success : false,
                 message : "Empty message cannot be sent"
             });
         }
-            let imageUrl ;
+            let imageUrl;
+            let videoUrl;
+            let audioUrl;
             if(image){
-                const uploadedImage =  await cloudinary.uploader.upload(image);
+                const uploadedImage =  await cloudinary.uploader.upload(image, {resource_type : "image"});
                 imageUrl = uploadedImage.secure_url;
                  }
                  if(video){
-                    const uploadedVideo =  await cloudinary.uploader.upload(video);
+                    const uploadedVideo =  await cloudinary.uploader.upload(video, {resource_type : "video"});
                     videoUrl = uploadedVideo.secure_url;
                      }
+                      if(audio){
+                          const uploadedAudio = await cloudinary.uploader.upload(audio, {resource_type : "video"});
+                          audioUrl = uploadedAudio.secure_url;
+                            }
                      const newMessage = await Message.create(
                         {
                             senderId,
                             receiverId,
                             text,
                            image : imageUrl,
-                           video : videoUrl
+                           video : videoUrl,
+                           audio : audioUrl
                         }
                      )
                      // emit the new message to the receiver
                      const receiverSocket = userSocketMap[receiverId];
                      if(receiverSocket){
-                        io.to(receiverSocketId).emit("newMessage",newMessage);
+                        io.to(receiverSocket).emit("newMessage",newMessage);
                      }
-                 res.status(200).json({success : true,message : newMessage});    
+                 res.status(200).json({success : true,newMessage});
     
 }   
     catch (error) {
         console.log(error);
         res.status(500).json({
-            status : false,
+            success : false,
             message : "Internal server error"});
     }
 

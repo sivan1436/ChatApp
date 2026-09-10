@@ -20,6 +20,9 @@ const messageSchema = new mongoose.Schema({
    video :{
     type : String,
    },
+    audio : {
+     type : String,
+    },
    seen : {
     type : Boolean,
     default : false

@@ -3,6 +3,115 @@
 * {
   font-family : "Outfit",sans-serif;
 }
+:root {
+  --ink: #09100f;
+  --panel: rgba(19, 35, 31, 0.88);
+  --panel-strong: #172923;
+  --line: rgba(166, 221, 198, 0.2);
+  --mint: #91e6c0;
+  --mint-deep: #3ba982;
+  --amber: #f4c56d;
+  --coral: #ff917c;
+  --copy: #f2f7f3;
+  --muted: #9aafa6;
+}
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+body {
+  background: var(--ink);
+  color: var(--copy);
+}
+.app-shell {
+  background-color: var(--ink);
+  background-image:
+    linear-gradient(rgba(145, 230, 192, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(145, 230, 192, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 12% 8%, rgba(145, 230, 192, 0.13), transparent 28%),
+    radial-gradient(circle at 88% 92%, rgba(244, 197, 109, 0.1), transparent 30%);
+  background-size: 42px 42px, 42px 42px, auto, auto;
+}
+.chat-frame {
+  background: linear-gradient(135deg, rgba(24, 45, 39, 0.9), rgba(8, 17, 15, 0.92));
+  border-color: var(--line);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+}
+.sidebar-surface,
+.details-surface {
+  background: rgba(15, 31, 27, 0.82);
+}
+.details-surface {
+  background: rgba(20, 39, 33, 0.98);
+}
+.menu-surface,
+.search-surface {
+  background: var(--panel-strong);
+  border-color: var(--line);
+}
+.selected-user {
+  background: rgba(145, 230, 192, 0.13);
+}
+.unread-badge,
+.record-button {
+  background: var(--mint-deep);
+}
+.chat-surface {
+  background: rgba(12, 25, 22, 0.42);
+}
+.message-bubble {
+  background: rgba(59, 169, 130, 0.27);
+}
+.composer-surface,
+.preview-surface {
+  background: rgba(218, 239, 229, 0.1);
+  border-color: var(--line);
+}
+.preview-surface {
+  background: rgba(9, 18, 16, 0.75);
+}
+.recording-button {
+  background: var(--coral);
+}
+.auth-surface {
+  background: rgba(19, 35, 31, 0.82);
+  border-color: var(--line);
+}
+.auth-input {
+  background: rgba(8, 17, 15, 0.45);
+  border-color: var(--line);
+  color: var(--copy);
+}
+.auth-input:focus {
+  border-color: var(--mint);
+  box-shadow: 0 0 0 2px rgba(145, 230, 192, 0.16);
+}
+.auth-surface input:not([type='checkbox']),
+.auth-surface textarea {
+  background: rgba(8, 17, 15, 0.45);
+  border-color: var(--line);
+  color: var(--copy);
+}
+.auth-surface input:not([type='checkbox']):focus,
+.auth-surface textarea:focus {
+  border-color: var(--mint);
+  box-shadow: 0 0 0 2px rgba(145, 230, 192, 0.16);
+}
+.primary-action {
+  background: var(--mint-deep);
+  color: #06120e;
+}
+.primary-action:hover {
+  background: var(--mint);
+}
+.accent-copy {
+  color: var(--amber);
+}
+.brand-logo {
+  filter: drop-shadow(0 8px 18px rgba(145, 230, 192, 0.12));
+}
 ::-webkit-scrollbar{
   display:none;
 }

@@ -26,19 +26,19 @@ io.on("connection",(socket)=>{
     const userId = socket.handshake.query.userId;
     console.log("user connected",userId);
     if(userId){
-        userSocketMap[userId] = socket.io
-
+        userSocketMap[userId] = socket.id;
+        io.emit("getOnlineUsers",Object.keys(userSocketMap));
     }
 
-})
-    // emit online users to all connected clients
-    io.emit("getOnlineUsers",Object.keys(userSocketMap));
-    // handle disconnection
-    io.on("disconnect",()=>{
+    // Remove only this connection, so a newer tab for the same user stays online.
+    socket.on("disconnect",()=>{
         console.log("user disconnected",userId);
-        delete userSocketMap[userId];
+        if(userSocketMap[userId] === socket.id){
+            delete userSocketMap[userId];
+        }
         io.emit("getOnlineUsers",Object.keys(userSocketMap));
- }) 
+    });
+});
 // middleware
 app.use(express.json({limit : "4mb"}));
 app.use(cors());

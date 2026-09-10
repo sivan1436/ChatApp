@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import axios from "axios"
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import toast from "react-hot-toast"
 import { useEffect } from "react";
 import {io} from "socket.io-client"
@@ -18,8 +18,23 @@ const [authuser,setAuthuser] = useState(null)
 const [onlineuser,setOnlineuser] = useState([]);
 const [socket,setSocket] = useState(null)
 
+// connect socket function to handle socket connection and online user updates
+const connectSocket = useCallback(function connectSocket(userData){
+    if(!userData || socket?.connected ) return;
+    const newSocket = io(backendurl,{
+        query :{
+         userId : userData._id
+        }
+    })
+    newSocket.connect()
+   setSocket(newSocket)
+   newSocket.on("getOnlineUsers",(userIds)=>{
+    setOnlineuser(userIds);
+   })
+}, [socket])
+
 // check if user is authenticated and if so set the user data and connect the socket
- async function checkAuth(){
+ const checkAuth = useCallback(async function checkAuth(){
     try{
       const {data} =  await axios.get("/api/auth/check");
       if(data.success){
@@ -31,7 +46,7 @@ const [socket,setSocket] = useState(null)
         toast.error(error.message)
 
     }
- }
+ }, [connectSocket])
 //  login function to handle user authentication and socket
 async function Login(state,credentials){
     try{
@@ -83,27 +98,12 @@ async function updateProfile(body) {
 }
 
 
-//  connect socket function to handle socket connection and online user updates
-function connectSocket(userData){
-    if(!userData || socket?.connected ) return;
-    const newSocket = io(backendurl,{
-        query :{
-         userId : userData._id   
-        }
-    })
-    newSocket.connect()
-   setSocket(newSocket)
-   newSocket.on("getOnlineUsers",(userIds)=>{
-    setOnlineuser(userIds);
-   })
-}
-
  useEffect(()=>{
     if(token){
         axios.defaults.headers.common["token"] = token
         checkAuth()
     }
- },[token])
+ },[token, checkAuth])
 
     const value = {
         axios,
