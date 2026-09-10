@@ -1,21 +1,28 @@
-import React, { useContext } from 'react'
-import assets, { userDummyData } from '../assets/assets'
+import { useContext, useEffect, useState } from 'react'
+import assets from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/Authcontext'
-
-const SideBar = ({selecteduser,setSelecteduser}) => {
+import {ChatContext}   from "../../context/ChatContext"
+const SideBar = () => {
+  const {Getusers,users,selecteduser,setSelecteduser,unseenmessages,setUnseenmessages} = useContext(ChatContext)
     const navigate = useNavigate()
-    const {logout} = useContext(AuthContext)
-  return (
-    <div className={`bg-[#8185B2]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white
-     ${selecteduser ?'max-md:hidden' : '' }`}>  
+    const [input,setInput] = useState('')
+    const {logout,onlineuser} = useContext(AuthContext)
+    const FilteredUsers = input?users.filter((user)=>user.fullname.toLowerCase().includes(input.toLowerCase())):users
+   useEffect(()=>{
+    Getusers();
+  },[Getusers, onlineuser])
+  
+    return (
+    <div className={`sidebar-surface h-full min-h-0 min-w-0 p-4 sm:p-5 rounded-r-xl overflow-y-auto text-white
+    ${selecteduser ?'max-lg:hidden' : '' }`}>  
      <div className='pb-5'>
         <div className='flex justify-between items-center'>
-          <img src={assets.logo} alt='' className='max-w-40'/>
+          <img src={assets.logo} alt='ChatNext' className='brand-logo max-w-40'/>
           <div className='relative py-2 group'>
            <img src={assets.menu_icon} alt='' className='max-h-5 cursor-pointer'/>       
-           <div className='absolute top-full right-0 z-20 w-32 p-5 rounded-md
-           bg-[#282142] border border-gray-600 text-gray-100 hidden
+           <div className='menu-surface absolute top-full right-0 z-20 w-32 p-5 rounded-md
+           border text-gray-100 hidden
            group-hover:block'>
             <p onClick={()=>navigate('/profile')} 
             className='cursor-pointer text-sm'>Edit profile</p>
@@ -25,29 +32,35 @@ const SideBar = ({selecteduser,setSelecteduser}) => {
             </div> 
           </div>
         </div>
-        <div className='bg-[#282142] rounded-full flex items-center gap-2 gap-2 py-3 px-4 mt-5'>
-            <img src={ assets.search_icon} alt='search'
-            className='w-3' />
-            <input type='text' className='bg-transprant border-none outline-none
-            text-white text-xs placeholder-[#8c8c8] flex-1' placeholder='search user...'/>
+        <div className='search-surface rounded-full flex items-center gap-2 py-3 px-4 mt-5'>
+            <img src={assets.search_icon} alt='search' className='w-3' />
+            <input
+              type='text'
+              value={input}
+              onChange={(e)=>setInput(e.target.value)}
+              className='bg-transparent border-none outline-none text-white text-xs placeholder-[#8c8c8] flex-1'
+              placeholder='search user...'
+            />
         </div>
 
      </div>
      <div className='flex flex-col'>
-        {userDummyData.map((user,index)=>(
+        {FilteredUsers.map((user,index)=>(
             <div key={index}
-            onClick={()=>{setSelecteduser(user)}}
+            onClick={()=>{setSelecteduser(user),setUnseenmessages((prev)=>(
+              {...prev,[user._id]:0}
+            ))}}
              className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm
-            ${selecteduser?._id === user._id && 'bg-[#282142]/50' }`}>
+            ${selecteduser?._id === user._id && 'selected-user' }`}>
                 <img src={user?.profilePic || assets.avatar_icon} alt=""
-                className='w-[35px] aspect-[1/1] rounded-full'/>
+                className='w-9 h-9 shrink-0 rounded-full'/>
             <div className='flex flex-col leading-5'>
-                <p>{user.fullName}</p>
-                {index <3 ? <span className='text-green-400 text-xs'>Online</span>
+                <p>{user.fullname}</p>
+                {onlineuser.includes(user._id) ? <span className='text-green-400 text-xs'>Online</span>
                 :<span className='text-neutral-400 tex-xs'>Ofline</span>}
             </div>
-            {index >2 && <p className='absolute top-4 right-4 text-xs h-5 w-5 flex justify-center items-center
-             rounded-full bg-violet-500/50'>{index}</p>}
+            {unseenmessages[user._id] > 0&& <p className='absolute top-4 right-4 text-xs h-5 w-5 flex justify-center items-center
+             unread-badge'>{unseenmessages[user._id]}</p>}
             </div>
         ))}
 
