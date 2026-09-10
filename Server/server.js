@@ -48,5 +48,6 @@ app.use("/api/status", (req, res) => {
 });
 app.use("/api/auth",UserRouter);
 app.use("/api/messages",MessageRouter);
-server.listen(process.env.PORT,()=>console.log("server is running on port:",process.env.PORT));
+const port = process.env.PORT || 5000;
+server.listen(port, "0.0.0.0",()=>console.log("server is running on port:",port));
 
