@@ -110,7 +110,7 @@ body {
   color: var(--amber);
 }
 .brand-logo {
-  filter: drop-shadow(0 8px 18px rgba(145, 230, 192, 0.12));
+  filter: hue-rotate(267deg) saturate(0.82) brightness(1.08) drop-shadow(0 8px 18px rgba(145, 230, 192, 0.12));
 }
 ::-webkit-scrollbar{
   display:none;
